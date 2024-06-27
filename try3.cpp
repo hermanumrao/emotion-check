@@ -11,22 +11,21 @@ using namespace std;
 
 int main() {
   try {
-
     // Load face detection and pose estimation models.
     frontal_face_detector detector = get_frontal_face_detector();
     shape_predictor pose_model;
     deserialize("shape_predictor_68_face_landmarks.dat") >> pose_model;
 
-    int frame_count = 0;
-    const int frame_skip = 0; // Skip 5 frames to reduce processing load
-
-    cv::VideoCapture cap(0); // opening OpenCV VideoCapture
+    cv::VideoCapture cap(0);
     if (!cap.isOpened()) {
       cerr << "Unable to connect to camera" << endl;
       return 1;
     }
-    cap.set(cv::CAP_PROP_FRAME_WIDTH, 640); // Lower resolution for speed
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, 320); // Lower resolution for speed
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+
+    int frame_count = 0;
+    const int frame_skip = 0; // Skip 5 frames to reduce processing load
 
     // Grab and process frames until the user closes the window.
     while (true) {
