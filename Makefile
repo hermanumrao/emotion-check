@@ -2,13 +2,13 @@
 CC=g++
 
 # Compiler flags
-CFLAGS=-std=c++11 -I/usr/local/include -I/usr/include/opencv4
+CFLAGS=-std=c++11 -O3 -I/usr/local/include -I/usr/include/opencv4
 LDFLAGS=-L/usr/local/lib -ldlib -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lpng -lcblas -llapack -lgif -lopencv_videoio
 # Target executable
 TARGET=emotion-check
 
 # Source files
-SRCS=try2.cpp
+SRCS=try3.cpp
 
 # Object files
 OBJS=$(SRCS:.cpp=.o)
