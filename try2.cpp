@@ -4,9 +4,10 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing/render_face_detections.h>
 #include <dlib/image_processing/shape_predictor.h>
-#include <dlib/opencv.h>      // Include dlib's OpenCV conversion functions
-#include <opencv2/opencv.hpp> // Include OpenCV
+#include <dlib/opencv.h>
+#include <opencv2/opencv.hpp>
 #include <opencv4/opencv2/videoio.hpp>
+#include <thread>
 
 using namespace dlib;
 using namespace std;
@@ -21,22 +22,33 @@ int main() {
         sp;
 
     // Open the webcam
-    cv::VideoCapture cap(0); // 0 is the default ID for the built-in webcam
+    cv::VideoCapture cap(0);
     if (!cap.isOpened()) {
       cerr << "Unable to connect to the camera" << endl;
       return 1;
     }
-    cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-    cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, 320); // Lower resolution for speed
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+
     // Create a window to display the image with landmarks
     image_window win;
 
+    int frameCount = 0;
     while (true) {
       cv::Mat temp;
-      cap >> temp; // Capture a frame
+      cap >> temp;
       if (temp.empty()) {
         cerr << "Captured an empty frame" << endl;
         break;
+      }
+
+      // Skip every 2nd frame
+      frameCount++;
+      if (frameCount % 2 != 0) {
+        cv::imshow("Webcam", temp);
+        if (cv::waitKey(10) >= 0)
+          break;
+        continue;
       }
 
       // Convert the frame to dlib's image format
@@ -56,8 +68,6 @@ int main() {
         for (size_t j = 0; j < shape.num_parts(); ++j) {
           int x = shape.part(j).x();
           int y = shape.part(j).y();
-          // Draw a circle at the specified point (x, y) with a radius of 2
-          // pixels
           draw_solid_circle(img, point(x, y), 2, rgb_pixel(0, 255, 0));
         }
 
